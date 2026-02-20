@@ -1,0 +1,1635 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I am sorry meri pyari Maya! 😿❤️</title>
+
+  <style>
+    /* ==========================================================
+       Cute Romantic Apology SPA (Single File)
+       - No frameworks / no external libraries
+       - 5 “pages” as full-screen sections
+       - Smooth transitions (fade + slide)
+       - Floating hearts background across the whole site
+       - Mobile-first, aesthetic pastel UI
+       ========================================================== */
+
+    /* ============== THEME ============== */
+    :root{
+      --bgA: #fff6fb;   /* pink cream */
+      --bgB: #fff2e8;   /* peach cream */
+      --bgC: #f3f0ff;   /* lavender tint */
+      --ink: #2a1d22;   /* warm dark */
+      --muted: rgba(42, 29, 34, 0.72);
+      --card: rgba(255,255,255,0.78);
+      --stroke: rgba(208, 98, 128, 0.20);
+      --shadow: 0 20px 60px rgba(30, 10, 18, 0.12);
+      --shadowSoft: 0 14px 40px rgba(30, 10, 18, 0.10);
+      --accent: #d06280; /* soft rose */
+      --accent2: #f3a3b8;/* blush */
+      --accent3: #b69cff;/* lavender */
+      --peach: #ffc6a5;
+      --cream: #fff7f0;
+      --radius: 26px;
+      --radius2: 18px;
+      --glass: blur(14px);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body{
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 520px at 12% 14%, rgba(243, 163, 184, 0.33), transparent 58%),
+        radial-gradient(900px 520px at 88% 28%, rgba(182, 156, 255, 0.23), transparent 60%),
+        radial-gradient(850px 520px at 52% 92%, rgba(255, 198, 165, 0.25), transparent 60%),
+        linear-gradient(160deg, var(--bgA), var(--bgB));
+      overflow: auto; /* SPA uses internal scroll-less pages */
+    }
+
+    /* Subtle grain overlay for aesthetic warmth */
+    .grain{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      mix-blend-mode: multiply;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      z-index: 1;
+    }
+
+    /* Floating hearts background layer */
+    #heartsLayer{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    /* Each floating heart */
+    .float-heart{
+      position: absolute;
+      bottom: -40px;
+      font-size: 16px;
+      opacity: 0;
+      filter: drop-shadow(0 10px 16px rgba(208, 98, 128, 0.22));
+      animation: floatUp var(--dur) ease-in forwards;
+      transform: translateX(var(--drift));
+      will-change: transform, opacity;
+    }
+
+    @keyframes floatUp{
+      0% { opacity: 0; transform: translateX(var(--drift)) translateY(0) scale(0.9); }
+      12% { opacity: 0.92; }
+      100% { opacity: 0; transform: translateX(calc(var(--drift) * 1.4)) translateY(-120vh) scale(1.35) rotate(10deg); }
+    }
+
+    /* ============== APP LAYOUT ============== */
+    .app{
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      z-index: 3; /* above hearts + grain */
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    /* The “phone-like” center frame (keeps it clean on large screens) */
+    .frame{
+      width: min(980px, 94vw);
+      height: min(720px, 92vh);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(208, 98, 128, 0.14);
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--glass);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    /* Top mini header (title + subtle glow) */
+    .topbar{
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(208, 98, 128, 0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
+    }
+
+    .brand{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+
+    .brandDot{
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #ffd1de, var(--accent));
+      box-shadow: 0 10px 20px rgba(208, 98, 128, 0.26);
+    }
+
+    .brandTitle{
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      font-family: Georgia, "Times New Roman", Times, serif; /* romantic heading feel */
+    }
+
+    .miniHint{
+      font-size: 12px;
+      color: rgba(42, 29, 34, 0.62);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .miniPill{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(208, 98, 128, 0.14);
+      background: rgba(255,255,255,0.55);
+    }
+
+    /* ============== SPA “PAGES” ============== */
+    .pages{
+      position: relative;
+      height: 100%;
+      overflow: auto;
+      background:
+        radial-gradient(850px 450px at 18% 30%, rgba(243, 163, 184, 0.18), transparent 60%),
+        radial-gradient(780px 420px at 88% 55%, rgba(182, 156, 255, 0.16), transparent 60%),
+        linear-gradient(160deg, rgba(255,255,255,0.30), rgba(255,255,255,0.10));
+    }
+
+    .page{
+      position: absolute;
+      inset: 0;
+      padding: 18px;
+      display: grid;
+      place-items: start center;
+	  overflow: auto;
+      opacity: 0;
+      transform: translateX(24px);
+      pointer-events: none;
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .page.active{
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* When navigating back, slide opposite */
+    .page.backSlide{
+      transform: translateX(-24px);
+    }
+
+    /* ============== CARD UI ============== */
+    .card{
+      width: min(820px, 100%);
+      border-radius: var(--radius);
+      border: 1px solid rgba(208, 98, 128, 0.16);
+      background: var(--card);
+      box-shadow: var(--shadowSoft);
+      backdrop-filter: var(--glass);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Soft glowing corner blobs */
+    .card::before{
+      content:"";
+      position: absolute;
+      inset: -50%;
+      background:
+        radial-gradient(circle at 22% 20%, rgba(243, 163, 184, 0.28), transparent 56%),
+        radial-gradient(circle at 82% 70%, rgba(182, 156, 255, 0.22), transparent 60%),
+        radial-gradient(circle at 55% 92%, rgba(255, 198, 165, 0.22), transparent 60%);
+      transform: rotate(10deg);
+      pointer-events: none;
+      opacity: 0.95;
+    }
+
+    .cardInner{
+      position: relative;
+      z-index: 1;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    /* Header inside each page card */
+    .pageHeader{
+      display:flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .progress{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(42, 29, 34, 0.66);
+      font-size: 13px;
+      user-select: none;
+    }
+
+    .progBadge{
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(208, 98, 128, 0.16);
+      background: rgba(255,255,255,0.55);
+      font-weight: 800;
+    }
+
+    /* Back link */
+    .backLink{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(42, 29, 34, 0.70);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(208, 98, 128, 0.14);
+      background: rgba(255,255,255,0.52);
+      transition: transform 160ms ease, background 220ms ease, border-color 220ms ease;
+    }
+    .backLink:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.80);
+      border-color: rgba(208, 98, 128, 0.28);
+    }
+    .backLink:active{
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Big romantic headings */
+    h1, h2{
+      margin: 0;
+      font-family: Georgia, "Times New Roman", Times, serif;
+      letter-spacing: -0.4px;
+    }
+    h1{
+      font-size: clamp(30px, 4.4vw, 52px);
+      line-height: 1.05;
+    }
+    h2{
+      font-size: clamp(20px, 3.0vw, 30px);
+      line-height: 1.1;
+    }
+
+    .subText{
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 15px;
+      max-width: 62ch;
+    }
+
+    /* ============== PHOTO PLACEHOLDERS ============== */
+    .photoWrap{
+      display: grid;
+      gap: 10px;
+      position: relative;
+    }
+
+    .photo{
+      width: 50%;
+      border-radius: var(--radius2);
+      overflow: hidden;
+      border: 1px solid rgba(208, 98, 128, 0.18);
+      background: rgba(255,255,255,0.6);
+      box-shadow: 0 18px 40px rgba(30, 10, 18, 0.10);
+      position: relative;
+    }
+
+    .photo img{
+      width: 100%;
+      height: min(520px, 60vh);
+      object-fit: cover;
+      display: block;
+      transform: none;
+      transition: transform 600ms ease;
+      filter: saturate(1.06) contrast(1.03);
+    }
+    .photo:hover img{
+      transform: scale(1.07);
+    }
+
+    .replaceTag{
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(208, 98, 128, 0.18);
+      color: rgba(42, 29, 34, 0.75);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+    }
+
+    .caption{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: rgba(42, 29, 34, 0.78);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* Cute micro animations */
+    .pulseHeart{
+      display: inline-block;
+      animation: pulse 1.4s ease-in-out infinite;
+      transform-origin: center;
+      filter: drop-shadow(0 10px 18px rgba(208, 98, 128, 0.22));
+    }
+    @keyframes pulse{
+      0%, 100%{ transform: scale(1); }
+      50%{ transform: scale(1.12); }
+    }
+
+    .floatCard{
+      animation: floaty 3.4s ease-in-out infinite;
+    }
+    @keyframes floaty{
+      0%, 100%{ transform: translateY(0); }
+      50%{ transform: translateY(-6px); }
+    }
+
+    /* Sparkles around photo (page 2) */
+    .sparkle{
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #fff, rgba(255,255,255,0.0) 65%);
+      box-shadow:
+        0 0 18px rgba(255,255,255,0.9),
+        0 0 28px rgba(243, 163, 184, 0.45);
+      opacity: 0.0;
+      animation: sparkle 1.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes sparkle{
+      0%{ transform: scale(0.2) rotate(0deg); opacity: 0.0; }
+      15%{ opacity: 0.95; }
+      55%{ opacity: 0.75; }
+      100%{ transform: scale(1.15) rotate(40deg); opacity: 0.0; }
+    }
+
+    /* Buttons/Links */
+    .btn{
+      appearance: none;
+      border: 1px solid rgba(208, 98, 128, 0.18);
+      background: rgba(255,255,255,0.55);
+      color: rgba(42, 29, 34, 0.86);
+      padding: 12px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 160ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+      user-select: none;
+      text-decoration: none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.85);
+      border-color: rgba(208, 98, 128, 0.30);
+      box-shadow: 0 14px 26px rgba(208, 98, 128, 0.14);
+    }
+    .btn:active{
+      transform: translateY(0) scale(0.985);
+    }
+
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(208, 98, 128, 0.92), rgba(243, 163, 184, 0.92));
+      color: #fff;
+      border-color: rgba(208, 98, 128, 0.35);
+      box-shadow: 0 16px 30px rgba(208, 98, 128, 0.22);
+    }
+    .btnPrimary:hover{
+      background: linear-gradient(135deg, rgba(208, 98, 128, 1), rgba(243, 163, 184, 1));
+    }
+
+    .btnGhost{
+      background: rgba(255,255,255,0.45);
+    }
+
+    .linkStart{
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 900;
+      color: rgba(208, 98, 128, 0.96);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(208, 98, 128, 0.18);
+      background: rgba(255,255,255,0.55);
+      transition: transform 160ms ease, background 220ms ease, border-color 220ms ease;
+    }
+    .linkStart:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.86);
+      border-color: rgba(208, 98, 128, 0.30);
+    }
+    .linkStart:active{
+      transform: translateY(0) scale(0.985);
+    }
+
+    /* ============== PAGE 1 CAT ANIMATION ============== */
+    .startLayout{
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .startText{
+      display: grid;
+      gap: 12px;
+    }
+
+    .softBadge{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(208, 98, 128, 0.14);
+      background: rgba(255,255,255,0.55);
+      font-weight: 900;
+      color: rgba(208, 98, 128, 0.92);
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      width: fit-content;
+    }
+
+    .catWrap{
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+
+    /* Cat built with simple HTML shapes (cute + slightly sad) */
+    .cat{
+      width: min(260px, 70vw);
+      aspect-ratio: 1 / 1;
+      position: relative;
+      display: grid;
+      place-items: center;
+      transform: translateY(6px);
+      filter: drop-shadow(0 24px 30px rgba(30, 10, 18, 0.12));
+    }
+
+    /* Head */
+    .catHead{
+      width: 72%;
+      height: 62%;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(208, 98, 128, 0.18);
+      border-radius: 45% 45% 46% 46%;
+      position: relative;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 40px rgba(30, 10, 18, 0.10);
+      animation: headFloat 3s ease-in-out infinite;
+    }
+    @keyframes headFloat{
+      0%,100%{ transform: translateY(0) rotate(0deg); }
+      50%{ transform: translateY(-6px) rotate(-1deg); }
+    }
+
+    /* Ears */
+    .ear{
+      width: 32%;
+      height: 36%;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(208, 98, 128, 0.18);
+      position: absolute;
+      top: -18%;
+      border-radius: 18% 70% 18% 70%;
+      transform-origin: bottom center;
+    }
+    .ear.left{
+      left: 4%;
+      transform: rotate(-14deg);
+      animation: earWobble 2.6s ease-in-out infinite;
+    }
+    .ear.right{
+      right: 4%;
+      transform: rotate(14deg);
+      animation: earWobble2 2.6s ease-in-out infinite;
+    }
+    @keyframes earWobble{
+      0%,100%{ transform: rotate(-14deg); }
+      50%{ transform: rotate(-6deg); }
+    }
+    @keyframes earWobble2{
+      0%,100%{ transform: rotate(14deg); }
+      50%{ transform: rotate(6deg); }
+    }
+
+    /* Inner ear blush */
+    .ear::after{
+      content:"";
+      position:absolute;
+      inset: 20% 22% 18% 22%;
+      background: radial-gradient(circle at 30% 30%, rgba(243, 163, 184, 0.75), rgba(243, 163, 184, 0.15));
+      border-radius: 22px;
+      filter: blur(0.2px);
+      opacity: 0.75;
+    }
+
+    /* Face features */
+    .face{
+      position:absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .eyes{
+      width: 70%;
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .eye{
+      width: 22%;
+      height: 30px;
+      border-radius: 999px;
+      background: rgba(42, 29, 34, 0.85);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(0);
+    }
+
+    /* Blink */
+    .eye::after{
+      content:"";
+      position:absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.86);
+      transform: translateY(-110%);
+      animation: blink 4.2s ease-in-out infinite;
+    }
+    @keyframes blink{
+      0%, 92%, 100%{ transform: translateY(-110%); }
+      94%{ transform: translateY(0%); }
+      96%{ transform: translateY(-110%); }
+    }
+
+    /* Eye sparkle */
+    .eye::before{
+      content:"";
+      position:absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #fff;
+      top: 6px;
+      left: 7px;
+      opacity: 0.95;
+    }
+
+    .nose{
+      position: absolute;
+      top: 56%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 14px;
+      background: radial-gradient(circle at 30% 30%, rgba(243, 163, 184, 0.95), rgba(208, 98, 128, 0.65));
+      border-radius: 40% 40% 55% 55%;
+      filter: drop-shadow(0 8px 10px rgba(208, 98, 128, 0.18));
+    }
+
+    .mouth{
+      position: absolute;
+      top: 62%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 52px;
+      height: 28px;
+    }
+    .mouth:before, .mouth:after{
+      content:"";
+      position:absolute;
+      width: 24px;
+      height: 16px;
+      border: 2px solid rgba(42, 29, 34, 0.55);
+      border-top: 0;
+      border-left: 0;
+      border-radius: 0 0 18px 0;
+      top: 3px;
+    }
+    .mouth:before{
+      left: 2px;
+      transform: rotate(10deg);
+    }
+    .mouth:after{
+      right: 2px;
+      transform: scaleX(-1) rotate(10deg);
+    }
+
+    /* Tear drop */
+    .tear{
+      position:absolute;
+      left: 27%;
+      top: 52%;
+      width: 10px;
+      height: 14px;
+      background: radial-gradient(circle at 30% 30%, rgba(210, 240, 255, 0.95), rgba(140, 205, 255, 0.55));
+      border-radius: 50% 50% 60% 60%;
+      transform: rotate(18deg);
+      opacity: 0.0;
+      animation: tearDrop 2.8s ease-in-out infinite;
+      filter: drop-shadow(0 10px 12px rgba(140, 205, 255, 0.18));
+    }
+    @keyframes tearDrop{
+      0%{ opacity: 0; transform: translateY(-8px) rotate(18deg) scale(0.9); }
+      22%{ opacity: 0.95; }
+      55%{ opacity: 0.8; transform: translateY(10px) rotate(18deg) scale(1); }
+      78%{ opacity: 0; transform: translateY(22px) rotate(18deg) scale(0.9); }
+      100%{ opacity: 0; }
+    }
+
+    /* Cheek blush */
+    .blush{
+      position:absolute;
+      width: 44px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, rgba(243, 163, 184, 0.65), rgba(243, 163, 184, 0.08));
+      top: 60%;
+      filter: blur(0.2px);
+      opacity: 0.85;
+    }
+    .blush.left{ left: 10%; }
+    .blush.right{ right: 10%; }
+
+    /* Little heart above cat */
+    .catHeart{
+      position:absolute;
+      top: -18px;
+      right: 6px;
+      font-size: 24px;
+      animation: heartBob 1.6s ease-in-out infinite;
+      filter: drop-shadow(0 16px 20px rgba(208, 98, 128, 0.26));
+    }
+    @keyframes heartBob{
+      0%,100%{ transform: translateY(0) rotate(-6deg); }
+      50%{ transform: translateY(-6px) rotate(6deg); }
+    }
+
+    /* ============== PAGE 2 TYPEWRITER ============== */
+    .typeBox{
+      padding: 14px 14px;
+      border-radius: var(--radius2);
+      border: 1px solid rgba(208, 98, 128, 0.14);
+      background: rgba(255,255,255,0.55);
+      color: rgba(42, 29, 34, 0.80);
+      line-height: 1.8;
+      font-size: 15px;
+      min-height: 74px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .caret{
+      display: inline-block;
+      width: 10px;
+      margin-left: 2px;
+      animation: caretBlink 800ms steps(1) infinite;
+      color: rgba(208, 98, 128, 0.95);
+      font-weight: 900;
+    }
+    @keyframes caretBlink{
+      50%{ opacity: 0; }
+    }
+
+    .nextRow{
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .hidden{
+      display: none !important;
+    }
+
+    /* ============== PAGE 3 HOLD-TO-UNLOCK ============== */
+    .holdArea{
+      display: grid;
+      gap: 10px;
+    }
+    .holdHint{
+      font-size: 13px;
+      color: rgba(42, 29, 34, 0.62);
+      margin: 0;
+    }
+
+    .holdBtn{
+      position: relative;
+      overflow: hidden;
+    }
+
+    .holdFill{
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(208, 98, 128, 0.45), rgba(182, 156, 255, 0.35));
+      width: 0%;
+      z-index: 0;
+      transition: width 50ms linear;
+    }
+    .holdBtn span{
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============== PAGE 4 CLICK 5 HEARTS ============== */
+    .tapHeartsArea{
+      position: relative;
+      height: 170px;
+      border-radius: var(--radius2);
+      border: 1px dashed rgba(208, 98, 128, 0.22);
+      background: rgba(255,255,255,0.40);
+      overflow: hidden;
+    }
+
+    .tapHeart{
+      position: absolute;
+      font-size: 28px;
+      cursor: pointer;
+      user-select: none;
+      filter: drop-shadow(0 16px 18px rgba(208, 98, 128, 0.20));
+      animation: tapFloat 2.6s ease-in-out infinite;
+      transform-origin: center;
+      transition: transform 140ms ease;
+    }
+    .tapHeart:hover{
+      transform: scale(1.12);
+    }
+    .tapHeart:active{
+      transform: scale(0.95);
+    }
+
+    @keyframes tapFloat{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-8px); }
+    }
+
+    /* Heart pop effect on click */
+    .pop{
+      animation: pop 260ms ease-out forwards;
+    }
+    @keyframes pop{
+      0%{ transform: scale(1); opacity: 1; }
+      100%{ transform: scale(1.8); opacity: 0; }
+    }
+
+    .counterPill{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(208, 98, 128, 0.14);
+      background: rgba(255,255,255,0.55);
+      font-weight: 900;
+      color: rgba(42, 29, 34, 0.78);
+      width: fit-content;
+    }
+
+    /* ============== FINAL PAGE MODAL + CONFETTI HEARTS ============== */
+    .modalBackdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 8, 14, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+    }
+    .modalBackdrop.open{ display: flex; }
+
+    .modal{
+      width: min(520px, 92vw);
+      border-radius: var(--radius);
+      border: 1px solid rgba(208, 98, 128, 0.24);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 26px 70px rgba(0,0,0,0.22);
+      overflow: hidden;
+      position: relative;
+      transform: translateY(10px) scale(0.98);
+      opacity: 0;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+    .modalBackdrop.open .modal{
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal::before{
+      content:"";
+      position:absolute;
+      inset:-45%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(243, 163, 184, 0.38), transparent 55%),
+        radial-gradient(circle at 78% 70%, rgba(182, 156, 255, 0.26), transparent 60%),
+        radial-gradient(circle at 50% 90%, rgba(255, 198, 165, 0.25), transparent 60%);
+      transform: rotate(-10deg);
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .modalInner{
+      position: relative;
+      z-index: 1;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .modalTitle{
+      margin: 0;
+      font-size: 20px;
+      font-family: Georgia, "Times New Roman", Times, serif;
+      letter-spacing: -0.2px;
+    }
+
+    .modalText{
+      margin: 0;
+      color: rgba(42, 29, 34, 0.78);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .modalActions{
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    /* Confetti hearts (burst) */
+    #confettiLayer{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 60;
+      overflow: hidden;
+    }
+    .confHeart{
+      position: absolute;
+      font-size: 18px;
+      opacity: 0;
+      animation: confetti 1.4s ease-out forwards;
+      filter: drop-shadow(0 14px 14px rgba(208, 98, 128, 0.18));
+    }
+    @keyframes confetti{
+      0%   { opacity: 0; transform: translate(0,0) scale(0.6) rotate(0deg); }
+      10%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.25) rotate(140deg); }
+    }
+
+    /* ============== RESPONSIVE ============== */
+    @media (max-width: 860px){
+      .frame{ height: min(820px, 92vh); }
+      .startLayout{ grid-template-columns: 1fr; }
+      .miniHint{ display: none; }
+      .photo img{ height: min(260px, 32vh); }
+    }
+    @media (max-width: 520px){
+      .topbar{ padding: 12px 12px; }
+      .cardInner{ padding: 14px; }
+      .page{ padding: 14px; }
+      .tapHeartsArea{ height: 160px; }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .page{ transition: none; }
+      .float-heart, .confHeart{ animation: none; }
+      .pulseHeart, .floatCard, .sparkle, .catHead, .ear, .tear, .catHeart{ animation: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background layers -->
+  <div class="grain"></div>
+  <div id="heartsLayer" aria-hidden="true"></div>
+  <div id="confettiLayer" aria-hidden="true"></div>
+
+  <main class="app">
+    <section class="frame" aria-label="Apology mini-site">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brandDot" aria-hidden="true"></span>
+          <span class="brandTitle">My Aplopogy to Meri Maya</span>
+        </div>
+        <div class="miniHint">
+          <span class="miniPill">Cutie pie • Pukulu • Mayalu</span>
+          <span class="miniPill">Shweta Sherpa from H5</span>
+        </div>
+      </header>
+
+      <div class="pages" id="pages">
+
+        <!-- ======================================================
+             PAGE 1 (START)
+             ====================================================== -->
+        <section class="page active" data-page="1" aria-label="Page 1 Start">
+          <div class="card">
+            <div class="cardInner">
+              <div class="pageHeader">
+                <a class="backLink" href="#" data-back aria-label="Back (disabled on first page)" style="opacity:.45; pointer-events:none;">
+                  ← Back
+                </a>
+                <div class="progress">
+                  <span class="progBadge">1 / 5</span>
+                </div>
+              </div>
+
+              <div class="startLayout">
+                <div class="startText">
+                  <span class="softBadge">For you, with honesty <span class="pulseHeart">💗</span></span>
+                  <h1>I am sorry meri maya😿❤️</h1>
+                  <p class="subText">
+                    Ma testo dramatic banna khojeko ta haina but I just want you to feel how much I care,
+                    and how much I want to fix what I hurt. I'm just implementing what I learned from my course along with the lesson I learned from my mistakes
+                  </p>
+
+                  <!-- Must be a hyperlink that starts the site -->
+                  <a class="linkStart" href="#" data-next>
+                    Click here to start <span class="pulseHeart">✨</span>
+                  </a>
+
+                  <p class="subText" style="font-size:13px; color: rgba(42,29,34,0.60);">
+                    (This is a mini-journey. Take it slowly.)
+                  </p>
+                </div>
+
+                <!-- Cute sad love cat animation (CSS shapes) -->
+                <div class="catWrap">
+                  <div class="cat" aria-label="Cute sad love cat animation">
+                    <div class="catHeart">💞</div>
+                    <div class="catHead">
+                      <div class="ear left"></div>
+                      <div class="ear right"></div>
+
+                      <div class="face">
+                        <div class="eyes">
+                          <div class="eye"></div>
+                          <div class="eye"></div>
+                        </div>
+                        <div class="tear"></div>
+                        <div class="blush left"></div>
+                        <div class="blush right"></div>
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="subText" style="text-align:center; font-size:13px; color: rgba(42,29,34,0.62); margin-top: 6px;">
+                    (Sanu sad because Sanu messed up 🥺)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             PAGE 2 (MEMORY 1) - TYPEWRITER + sparkles + Next after typing
+             ====================================================== -->
+        <section class="page" data-page="2" aria-label="Page 2 Memory 1">
+          <div class="card">
+            <div class="cardInner">
+              <div class="pageHeader">
+                <a class="backLink" href="#" data-back>← Back</a>
+                <div class="progress">
+                  <span class="progBadge">2 / 5</span>
+                </div>
+              </div>
+
+              <h2>Somehow it is you. <span class="pulseHeart">💗</span></h2>
+
+              <div class="photoWrap" id="sparkleWrap">
+                <div class="photo" aria-label="Photo placeholder">
+                  <!-- REPLACE THIS IMAGE WITH YOUR OWN -->
+                  <img src="cute.jpg" alt="Couple photo placeholder 1" />
+                  <div class="replaceTag">This smile of yours means everything to me</div>
+                </div>
+
+                <div class="caption">
+                  <span>The moment that felt like home.</span>
+                  <span class="pulseHeart">💞</span>
+                </div>
+              </div>
+
+              <!-- Typewriter text -->
+              <div class="typeBox" aria-label="Typewriter message">
+                <span id="typeText"></span><span class="caret" id="caret">|</span>
+              </div>
+
+              <div class="nextRow">
+                <a class="btn btnPrimary hidden" href="#" id="nextAfterType" data-next>
+                  Next <span class="pulseHeart">→</span>
+                </a>
+              </div>
+
+              <p class="subText" style="font-size:13px; color: rgba(42,29,34,0.62);">
+                (Next unlocks after the message finishes typing.)
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             PAGE 3 (MEMORY 2) - HOLD BUTTON 2s to unlock next + progress bar fill
+             ====================================================== -->
+        <section class="page" data-page="3" aria-label="Page 3 Memory 2">
+          <div class="card floatCard">
+            <div class="cardInner">
+              <div class="pageHeader">
+                <a class="backLink" href="#" data-back>← Back</a>
+                <div class="progress">
+                  <span class="progBadge">3 / 5</span>
+                </div>
+              </div>
+
+              <h2>You are enough for me. <span class="pulseHeart">💘</span></h2>
+
+              <div class="photoWrap">
+                <div class="photo" aria-label="Photo placeholder">
+                  <!-- REPLACE THIS IMAGE WITH YOUR OWN -->
+                  <img src="smile.jpg" alt="Couple photo placeholder 2" />
+                  <div class="replaceTag">YOUR SMILE</div>
+                </div>
+
+                <div class="caption">
+                  <span>The best day of my life.</span>
+                  <span class="pulseHeart">✨</span>
+                </div>
+              </div>
+
+              <p class="subText">
+                There are thousand reasons why you are enough for me and I remember each one of them very clearly. I love the way you love and cared for me so much. The way you check if I’m okay wherever I am. The way you remember small details of me. Ani I remember how tired we were on this day and how I slept on your lap waiting for the cruise. 
+				This day was really the best of my life Maya. I love you💘.
+              </p>
+
+              <div class="holdArea">
+                <p class="holdHint">First click once to reveal the secret message and then Hold the button for 2 seconds to unlock the next page.</p>
+
+                <button class="btn btnPrimary holdBtn" id="holdBtn" type="button" aria-label="Hold to forgive">
+                  <div class="holdFill" id="holdFill"></div>
+                  <span>Hold here like you hold my hands 🥺</span>
+                </button>
+
+                <div class="nextRow">
+                  <a class="btn btnPrimary hidden" href="#" id="nextAfterHold" data-next>
+                    Next <span class="pulseHeart">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <p class="subText" style="font-size:13px; color: rgba(42,29,34,0.62);">
+                (Jahile esari nai haasirakhnu hai Maya.)
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             PAGE 4 (MEMORY 3) - click 5 floating hearts to continue
+             ====================================================== -->
+        <section class="page" data-page="4" aria-label="Page 4 Memory 3">
+          <div class="card">
+            <div class="cardInner">
+              <div class="pageHeader">
+                <a class="backLink" href="#" data-back>← Back</a>
+                <div class="progress">
+                  <span class="progBadge">4 / 5</span>
+                </div>
+              </div>
+
+              <h2>I'll Choose you over and over again with better version of me. <span class="pulseHeart">💕</span></h2>
+
+              <div class="photoWrap">
+                <div class="photo" aria-label="Photo placeholder">
+                  <!-- REPLACE THIS IMAGE WITH YOUR OWN -->
+                  <img src="aa.jpg" alt="Couple photo placeholder 3" />
+                  <div class="replaceTag">My maya was angry when hungry.</div>
+                </div>
+
+                <div class="caption">
+                  <span>To the most beautiful person I have ever met. You being you made me fall in love with you so much that its pushing me to become better. Im not perfect but I'm working on myself every day and I still choose you over and over again with honesty Maya.
+				  </span>
+                  <span class="pulseHeart">💗</span>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                <div class="counterPill">
+                  Tap 5 hearts to unlock another page:
+                  <span id="heartCount">0</span>/5
+                  <span class="pulseHeart">💞</span>
+                </div>
+
+                <a class="btn btnPrimary hidden" href="#" id="nextAfterTaps" data-next>
+                  Next <span class="pulseHeart">→</span>
+                </a>
+              </div>
+
+              <div class="tapHeartsArea" id="tapHeartsArea" aria-label="Tap hearts area">
+                <!-- Hearts are generated by JS -->
+              </div>
+
+              <p class="subText" style="font-size:13px; color: rgba(42,29,34,0.62);">
+                (All these hearts are for you Maya.)
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             PAGE 5 (FINAL) - send apology button + modal + heart burst/confetti hearts
+             ====================================================== -->
+        <section class="page" data-page="5" aria-label="Page 5 Final">
+          <div class="card">
+            <div class="cardInner">
+              <div class="pageHeader">
+                <a class="backLink" href="#" data-back>← Back</a>
+                <div class="progress">
+                  <span class="progBadge">5 / 5</span>
+                </div>
+              </div>
+
+              <h1>I am sorry for everything <span class="pulseHeart">❤️</span></h1>
+
+              <div class="photoWrap">
+                <div class="photo" aria-label="Photo placeholder">
+                  <!-- REPLACE THIS IMAGE WITH YOUR OWN -->
+                  <img src="sa.jpg"Couple photo placeholder 4" />
+                  <div class="replaceTag">MAYA HAPPY, WORLD HAPPY</div>
+                </div>
+
+                <div class="caption">
+                  <span>I still choose you honestly.</span>
+                  <span class="pulseHeart">💖</span>
+                </div>
+              </div>
+
+              <p class="subText">
+                I’m sorry for the way I crossed the boundries for the time that I made you feel unheard, heavy and alone.
+				For the time I acted so immature.
+                I love you and care about you deeply, and I don’t want to be the reason your heart feels tired.
+              </p>
+              <p class="subText">
+                I just think about you and do my things that I can be happy with alongside loving you from distance. Recently I'm not into any social media but instead 
+				I am learning more codings, write notes and letters for you, make sketches of you while you are on my mind all the time. Doesn't mean I am tring to 
+				get stuck. I just love being creative and trying to reach you out in not a boring way. 
+                No pressure for you maya, just a real promise to try, and to keep trying. 
+              </p>
+
+              <div class="nextRow">
+                <button class="btn btnPrimary" id="sendApologyBtn" type="button">
+                  Apology from Sanu <span class="pulseHeart">💌</span>
+                </button>
+              </div>
+
+              <p class="subText" style="font-size:13px; color: rgba(42,29,34,0.62);">
+                (Clicking will take you to the final message.)
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal (Final page popup) -->
+  <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modalInner">
+        <h3 class="modalTitle" id="modalTitle">Thank you for reading and making it till the final page 💗</h3>
+        <p class="modalText">I love you Maya. I’m here and I want to make things right, in a way that feels safe for you.</p>
+        <div class="modalActions">
+          <button class="btn btnGhost" id="closeModalBtn" type="button">Close</button>
+          <button class="btn btnPrimary" id="copyMsgBtn" type="button">Copy a sweet text</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================
+       SPA Logic + Animations (Beginner-friendly JS)
+       - Page switching (fade + slide)
+       - Floating hearts background (continuous)
+       - Page 2 typewriter + Next unlock
+       - Page 3 hold-to-unlock + progress fill
+       - Page 4 tap 5 hearts + pop effect
+       - Final page modal + confetti hearts burst
+       ========================================================== */
+
+    // ---------- SPA: Page switching ----------
+    const pages = Array.from(document.querySelectorAll(".page"));
+    let currentIndex = 0; // Page 1 is index 0
+
+    function showPage(index, direction = "forward") {
+      if (index < 0 || index >= pages.length) return;
+
+      // Remove active from current
+      const current = pages[currentIndex];
+      current.classList.remove("active");
+      current.classList.remove("backSlide");
+
+      // Add directional slide hint to the new one
+      const next = pages[index];
+      next.classList.remove("backSlide");
+      if (direction === "back") next.classList.add("backSlide");
+
+      // Activate new page
+      next.classList.add("active");
+      currentIndex = index;
+
+      // Trigger page-specific behaviors
+      handlePageEnter(index);
+    }
+
+    // All "Next" links/buttons
+    document.querySelectorAll("[data-next]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(currentIndex + 1, "forward");
+      });
+    });
+
+    // All "Back" links
+    document.querySelectorAll("[data-back]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(currentIndex - 1, "back");
+      });
+    });
+
+    // ---------- Floating hearts (background) ----------
+    const heartsLayer = document.getElementById("heartsLayer");
+    const heartEmojis = ["💗","💖","💕","💞","💘","❤️","✨"];
+    function spawnBackgroundHeart() {
+      const h = document.createElement("div");
+      h.className = "float-heart";
+      h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+      const left = Math.random() * 100; // vw
+      const size = 12 + Math.random() * 18;
+      const drift = (Math.random() * 60 - 30).toFixed(1) + "px";
+      const dur = (2.6 + Math.random() * 2.4).toFixed(2) + "s";
+
+      h.style.left = left + "vw";
+      h.style.fontSize = size + "px";
+      h.style.setProperty("--drift", drift);
+      h.style.setProperty("--dur", dur);
+
+      heartsLayer.appendChild(h);
+
+      // Cleanup after animation
+      const ms = (parseFloat(dur) + 0.6) * 1000;
+      setTimeout(() => h.remove(), ms);
+    }
+
+    // Spawn hearts steadily (cute but not overwhelming)
+    setInterval(spawnBackgroundHeart, 320);
+
+    // ---------- Page 2: Typewriter + sparkles ----------
+    const typeTarget = document.getElementById("typeText");
+    const caret = document.getElementById("caret");
+    const nextAfterType = document.getElementById("nextAfterType");
+    const sparkleWrap = document.getElementById("sparkleWrap");
+
+    const typeMessage =
+      "I keep thinking about how much you cared about me every second I was with you. How safe I felt when I was with you. " +
+      "I’m sorry Maya I made things heavy. I want to try no matter how long it takes to make you feel the luckiest person in the world just like you made me feel so. You deserve gentleness, not stress.";
+
+    let typingStarted = false;
+    let typingDone = false;
+
+    function startTypewriter() {
+      if (typingStarted) return;
+      typingStarted = true;
+
+      typeTarget.textContent = "";
+      caret.classList.remove("hidden");
+      nextAfterType.classList.add("hidden");
+
+      // Add a few sparkle dots around the photo
+      addSparkles();
+
+      let i = 0;
+      const speed = 32; // typing speed in ms
+
+      const timer = setInterval(() => {
+        typeTarget.textContent += typeMessage[i];
+        i++;
+
+        if (i >= typeMessage.length) {
+          clearInterval(timer);
+          typingDone = true;
+          caret.classList.add("hidden");
+          nextAfterType.classList.remove("hidden");
+        }
+      }, speed);
+    }
+
+    function addSparkles() {
+      // Remove old sparkles if any
+      sparkleWrap.querySelectorAll(".sparkle").forEach(s => s.remove());
+
+      // Place sparkles around photo corners
+      const positions = [
+        { top: "8px",  left: "10px",  delay: "0s" },
+        { top: "22px", right: "18px", delay: "0.2s" },
+        { bottom: "16px", left: "18px", delay: "0.35s" },
+        { bottom: "22px", right: "10px", delay: "0.1s" }
+      ];
+
+      positions.forEach(pos => {
+        const s = document.createElement("div");
+        s.className = "sparkle";
+        Object.assign(s.style, pos);
+        s.style.animationDelay = pos.delay;
+        sparkleWrap.appendChild(s);
+      });
+    }
+
+    // ---------- Page 3: Hold to unlock (2 seconds) ----------
+    const holdBtn = document.getElementById("holdBtn");
+    const holdFill = document.getElementById("holdFill");
+    const nextAfterHold = document.getElementById("nextAfterHold");
+
+    let holdActive = false;
+    let holdStart = 0;
+    let holdRaf = null;
+    const HOLD_MS = 2000;
+
+    function setHoldProgress(pct) {
+      holdFill.style.width = Math.max(0, Math.min(100, pct)) + "%";
+    }
+
+    function holdLoop() {
+      if (!holdActive) return;
+
+      const now = performance.now();
+      const elapsed = now - holdStart;
+      const pct = (elapsed / HOLD_MS) * 100;
+      setHoldProgress(pct);
+
+      if (elapsed >= HOLD_MS) {
+        holdActive = false;
+        setHoldProgress(100);
+        nextAfterHold.classList.remove("hidden");
+        // small feedback
+        holdBtn.querySelector("span").textContent = "Yayy aba arko page jana Next click gara haii ✨";
+        return;
+      }
+      holdRaf = requestAnimationFrame(holdLoop);
+    }
+
+    function startHold() {
+      if (nextAfterHold && !nextAfterHold.classList.contains("hidden")) return; // already unlocked
+      holdActive = true;
+      holdStart = performance.now();
+      setHoldProgress(0);
+      holdBtn.querySelector("span").textContent = "Holding… 💗";
+      holdRaf = requestAnimationFrame(holdLoop);
+    }
+
+    function cancelHold() {
+      if (!holdActive) return;
+      holdActive = false;
+      if (holdRaf) cancelAnimationFrame(holdRaf);
+      holdRaf = null;
+      setHoldProgress(0);
+      holdBtn.querySelector("span").textContent = "Hold like you hold my hand. 🥺";
+    }
+
+    // Mouse + touch events
+    holdBtn.addEventListener("mousedown", startHold);
+    holdBtn.addEventListener("mouseup", cancelHold);
+    holdBtn.addEventListener("mouseleave", cancelHold);
+
+    holdBtn.addEventListener("touchstart", (e) => { e.preventDefault(); startHold(); }, { passive: false });
+    holdBtn.addEventListener("touchend", cancelHold);
+
+    // ---------- Page 4: Tap 5 hearts to unlock ----------
+    const tapHeartsArea = document.getElementById("tapHeartsArea");
+    const heartCountEl = document.getElementById("heartCount");
+    const nextAfterTaps = document.getElementById("nextAfterTaps");
+    let tapped = 0;
+    let heartsMade = false;
+
+    function randomBetween(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function makeTapHearts() {
+      if (heartsMade) return;
+      heartsMade = true;
+
+      tapHeartsArea.innerHTML = "";
+      tapped = 0;
+      heartCountEl.textContent = "0";
+      nextAfterTaps.classList.add("hidden");
+
+      // Create 8 hearts; user needs to tap any 5
+      const count = 8;
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement("div");
+        h.className = "tapHeart";
+        h.textContent = ["💗","💖","💕","💞","💘"][i % 5];
+
+        // Random positions inside area
+        const x = randomBetween(6, 86);
+        const y = randomBetween(16, 70);
+        h.style.left = x + "%";
+        h.style.top = y + "%";
+        h.style.animationDelay = (Math.random() * 0.5).toFixed(2) + "s";
+
+        h.addEventListener("click", () => tapOneHeart(h));
+        h.addEventListener("touchstart", (e) => { e.preventDefault(); tapOneHeart(h); }, { passive: false });
+
+        tapHeartsArea.appendChild(h);
+      }
+    }
+
+    function tapOneHeart(el) {
+      // If already popped, ignore
+      if (el.dataset.popped === "1") return;
+      el.dataset.popped = "1";
+
+      // Pop animation
+      el.classList.add("pop");
+
+      // Increment counter
+      tapped++;
+      heartCountEl.textContent = String(tapped);
+
+      // After pop animation, hide it
+      setTimeout(() => {
+        el.style.display = "none";
+      }, 260);
+
+      // Unlock next after 5 taps
+      if (tapped >= 5) {
+        nextAfterTaps.classList.remove("hidden");
+      }
+    }
+
+    // ---------- Final Page: Modal + heart confetti burst ----------
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const copyMsgBtn = document.getElementById("copyMsgBtn");
+    const sendApologyBtn = document.getElementById("sendApologyBtn");
+    const confettiLayer = document.getElementById("confettiLayer");
+
+    function openModal() {
+      modalBackdrop.classList.add("open");
+    }
+    function closeModal() {
+      modalBackdrop.classList.remove("open");
+    }
+
+    closeModalBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modalBackdrop.classList.contains("open")) closeModal();
+    });
+
+    copyMsgBtn.addEventListener("click", async () => {
+      const msg = "I’m sorry for how I handled things. I care about you deeply, and I want to make it right—when you’re ready. 💗";
+      try{
+        await navigator.clipboard.writeText(msg);
+        copyMsgBtn.textContent = "The End";
+        setTimeout(() => copyMsgBtn.textContent = "Copy a sweet text", 1200);
+      }catch{
+        alert("Copy failed. Here’s the message:\n\n" + msg);
+      }
+    });
+
+    function burstConfettiHearts() {
+      // Create a small heart burst from center of screen
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      const icons = ["💗","💖","💕","💞","💘","❤️","✨"];
+      const count = 26;
+
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement("div");
+        h.className = "confHeart";
+        h.textContent = icons[Math.floor(Math.random() * icons.length)];
+
+        // start near center
+        h.style.left = (centerX + randomBetween(-20, 20)) + "px";
+        h.style.top  = (centerY + randomBetween(-20, 20)) + "px";
+
+        // fly outward
+        const dx = randomBetween(-220, 220).toFixed(0) + "px";
+        const dy = randomBetween(-260, 140).toFixed(0) + "px";
+        h.style.setProperty("--dx", dx);
+        h.style.setProperty("--dy", dy);
+
+        // random size
+        h.style.fontSize = (14 + Math.random() * 16).toFixed(0) + "px";
+
+        confettiLayer.appendChild(h);
+
+        setTimeout(() => h.remove(), 1500);
+      }
+    }
+
+    sendApologyBtn.addEventListener("click", () => {
+      burstConfettiHearts();
+      openModal();
+    });
+
+    // ---------- Page enter hooks ----------
+    function handlePageEnter(index) {
+      // Page 2: start typewriter each time you enter page 2
+      if (index === 1) {
+        // Reset typewriter states
+        typingStarted = false;
+        typingDone = false;
+        startTypewriter();
+      }
+
+      // Page 3: reset hold UI on enter
+      if (index === 2) {
+        nextAfterHold.classList.add("hidden");
+        setHoldProgress(0);
+        holdBtn.querySelector("span").textContent = "Hold “Forgive me” 🥺";
+      }
+
+      // Page 4: generate hearts on enter
+      if (index === 3) {
+        heartsMade = false;
+        makeTapHearts();
+      }
+
+      // Page 5: nothing special needed
+    }
+
+    // Start page enter hook for Page 1
+    handlePageEnter(0);
+
+    // Optional: prevent text selection drag on mobile
+    document.addEventListener("dragstart", (e) => e.preventDefault());
+  </script>
+</body>
+</html>
